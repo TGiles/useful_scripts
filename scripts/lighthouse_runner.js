@@ -45,7 +45,6 @@ async function processReports(urlList, opts, fileTime, tempFilePath) {
 /*   
     This function allows us to queue up async promises.
     Otherwise, Lighthouse is going to try to run a report on every URL in the URL list...
-    which is bad since 
 */
 const parallelLimit = async (funcList, limit = 4) => {
     let inFlight = new Set();
