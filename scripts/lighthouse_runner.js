@@ -62,8 +62,7 @@ const parallelLimit = async (funcList, limit = 4) => {
 
 function main() {
     var urlList = [];
-    // const domainRoot = new URL("http://tgiles.github.io");
-    const domainRoot = new URL("https://www.fairvoteva.org/");
+    const domainRoot = new URL("http://tgiles.github.io");
     urlList.push(domainRoot.href);
     var simpleCrawler = new Crawler(domainRoot.href)
         .on("queueadd", function (queueItem) {
