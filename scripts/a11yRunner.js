@@ -36,10 +36,12 @@ function main(url, outputPath, configurationFile="./default_a11y.yml") {
         catch(err) {
             throw err;
         }
-    }  
+    }
     var opts = {
         outputDirectory: outputDirectory,
-        bootstrap: configurationFile
+        maximumDepth: 0,
+        maximumUrls: 256,
+        bootstrap: undefined
     };
     return a11y.start(opts, [url]);
 }
