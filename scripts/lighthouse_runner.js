@@ -29,7 +29,6 @@ async function processReports(urlList, opts, fileTime, tempFilePath) {
                 var report = generateReport.generateReportHtml(results);
                 // Default is to test against mobile form factor, therefore .mobile.report.html
                 const filePath = path.join(tempFilePath, replacedUrl + ".mobile.report.html");
-                // const filePath = path.join(__dirname, "TEST_FOLDER_AF", "lighthouse", fileTime, replacedUrl + ".mobile.report.html");
                 // https://stackoverflow.com/questions/34811222/writefile-no-such-file-or-directory
                 fs.writeFile(filePath, report, {
                     encoding: 'utf-8'
