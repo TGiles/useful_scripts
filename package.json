@@ -1,0 +1,23 @@
+{
+  "name": "useful_scripts",
+  "version": "0.0.1",
+  "description": "A collection of useful? scripts",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TGiles/useful_scripts.git"
+  },
+  "author": "Tim Giles",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/TGiles/useful_scripts/issues"
+  },
+  "homepage": "https://github.com/TGiles/useful_scripts#readme",
+  "dependencies": {
+    "js-yaml": "^3.12.0",
+    "the-a11y-machine": "^0.9.3"
+  }
+}
