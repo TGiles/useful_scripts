@@ -102,7 +102,10 @@ function main() {
             */
             (async () => {
                 const promises = await parallelLimit(
-                    [processReports(urlList, opts, fileTime, tempFilePath)],
+                    [
+                        processReports(urlList, opts, fileTime, tempFilePath),
+                        processReports(urlList, desktopOpts, fileTime, tempFilePath)
+                    ],
                     2);
                 await Promise.all(promises);
                 console.log('done with all reports!');
