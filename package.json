@@ -18,9 +18,7 @@
   "homepage": "https://github.com/TGiles/useful_scripts#readme",
   "dependencies": {
     "chrome-launcher": "^0.10.5",
-    "js-yaml": "^3.13.1",
     "lighthouse": "^3.2.1",
-    "simplecrawler": "^1.1.6",
-    "the-a11y-machine": "^0.9.3"
+    "simplecrawler": "^1.1.6"
   }
 }
