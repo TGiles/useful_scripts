@@ -4,10 +4,7 @@ const generateReport = require('lighthouse/lighthouse-core/report/report-generat
 const chromeLauncher = require('chrome-launcher');
 const fs = require('fs');
 const path = require('path');
-// Not sure why I have to import URL module this way, but (shrug)
-const {
-    URL
-} = require('url');
+const { URL } = require('url');
 
 async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
     const chrome = await chromeLauncher.launch({
@@ -58,7 +55,7 @@ const parallelLimit = async (funcList, limit = 4) => {
     });
 };
 
-function main() {
+const main = () => {
     var urlList = [];
     const domainRoot = new URL("http://tgiles.github.io");
     urlList.push(domainRoot.href);
@@ -84,21 +81,20 @@ function main() {
                 emulatedFormFactor: 'desktop'
             };
             var fileTime = new Date().toISOString();
-            /* Replacing characters that make Windows filesystem sad */
+            // Replacing characters that make Windows filesystem sad
             fileTime = fileTime.replace(/:/g, "_");
             fileTime = fileTime.replace(/\./g, "_");
-
-            /* 
-                tempFilePath is wherever we want to store the generated report
-            */
+            
+            // tempFilePath is wherever we want to store the generated report
             var tempFilePath = path.join(__dirname, "lighthouse", fileTime);
             if (!fs.existsSync(tempFilePath)) {
                 fs.mkdirSync(tempFilePath,  {recursive: true});
             }
-            /* After crawling   */
-            /* async start function
-                This prevents the CPU from getting bogged down when Lighthouse tries to run
-                a report on every URL in the URL list
+            // After crawling
+            /* 
+            async start function
+            This prevents the CPU from getting bogged down when Lighthouse tries to run
+            a report on every URL in the URL list
             */
             (async () => {
                 const promises = await parallelLimit(
