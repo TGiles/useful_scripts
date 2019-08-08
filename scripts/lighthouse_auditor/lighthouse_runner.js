@@ -30,6 +30,13 @@ async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
     }
 };
 
+/**
+ * Function to process the Lighthouse Result object(s)
+ *
+ * @param {[string]} urlList Lighthouse will run an audit for each URL in this list
+ * @param {[{}]} opts Any options to pass into Chrome
+ * @param {string} tempFilePath A path to store the resulting HTML files
+ */
 async function processReports(urlList, opts, tempFilePath) {
     try {
     for (i = 0; i < urlList.length; i++) {
