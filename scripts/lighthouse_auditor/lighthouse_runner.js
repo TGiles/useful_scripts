@@ -75,13 +75,19 @@ async function processReports(urlList, opts, tempFilePath) {
     }
 };
 
+const processResults = (processObj) => {
+    let currentUrl = processObj.currentUrl;
+    let opts = processObj.opts;
+    let tempFilePath = processObj.tempFilePath;
+    let results = processObj.results;
+    let splitUrl = processObj.currentUrl.split('//');
                 let replacedUrl = splitUrl[1].replace(/\//g, "_");
                 let report = generateReport.generateReportHtml(results);
                 let filePath;
                 if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
                     filePath = path.join(tempFilePath, replacedUrl + '.desktop.report.html');
                 } else {
-                    filePath = path.join(tempFilePath, replacedUrl + ".mobile.report.html");
+        filePath = path.join(tempFilePath, replacedUrl + '.mobile.report.html');
                 }
                 // https://stackoverflow.com/questions/34811222/writefile-no-such-file-or-directory
                 fs.writeFile(filePath, report, {
@@ -89,9 +95,9 @@ async function processReports(urlList, opts, tempFilePath) {
                 }, (err) => {
                     if (err) throw err;
                     if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
-                        console.log('Wrote desktop report: ', e)
+            console.log('Wrote desktop report: ', currentUrl)
                     } else {
-                        console.log('Wrote mobile report: ', e);
+            console.log('Wrote mobile report: ', currentUrl);
                     }
 
                 });
