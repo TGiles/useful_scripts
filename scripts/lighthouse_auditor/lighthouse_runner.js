@@ -107,9 +107,13 @@ const processResults = (processObj) => {
             });
     }
 };
-/*   
-    This function allows us to queue up async promises.
-    Otherwise, Lighthouse is going to try to run a report on every URL in the URL list...
+/**
+ * Helper function to queue up async promises.
+ * Otherwise, Lighthouse is going to run a report on every URL in the URL list.
+ * This will bog down the CPU.
+ * @param {[function]} funcList A list of functions to be executed
+ * @param {number} [limit=4] The number of parallel processes to execute the funcList
+ * 
 */
 const parallelLimit = async (funcList, limit = 4) => {
     let inFlight = new Set();
