@@ -7,6 +7,14 @@ const path = require('path');
 const { URL } = require('url');
 const simpleCrawlerConfig = require('./config/simpleCrawler');
 
+/**
+ * Launches a headless instance of chrome and runs Lighthouse on that instance.
+ *
+ * @param {*} url A URL that the headless instance will navigate to
+ * @param {*} opts Any options to pass into Chrome
+ * @param {*} [config=null] Any special options passed to Lighthouse
+ * @returns Lighthouse Result object (LHR)
+ */
 async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
     const chrome = await chromeLauncher.launch({
         chromeFlags: opts.chromeFlags
