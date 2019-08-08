@@ -184,7 +184,7 @@ const main = () => {
         simpleCrawler[key] = simpleCrawlerConfig[key];
     }
     simpleCrawler.host = domainRoot.hostname;
-    console.log('Starting simple crawler on', simpleCrawler.host, '!');
+    console.log('Starting simple crawler on', simpleCrawler.host + '!');
     simpleCrawler.start();
 }
 main();
