@@ -4,7 +4,7 @@
   "description": "A utility package for automating lighthouse reports ",
   "main": "lighthouse_runner.js",
   "scripts": {
-    "start": "node scripts/lighthouse_runner"
+    "start": "node lighthouse_runner"
   },
   "repository": {
     "type": "git",
