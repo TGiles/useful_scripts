@@ -30,12 +30,44 @@ async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
     }
 };
 
-async function processReports(urlList, opts, fileTime, tempFilePath) {
+async function processReports(urlList, opts, tempFilePath) {
+    try {
     for (i = 0; i < urlList.length; i++) {
-        let e = urlList[i];
-        await launchChromeAndRunLighthouseAsync(e, opts)
+            let currentUrl = urlList[i];
+            await launchChromeAndRunLighthouseAsync(currentUrl, opts[0])
             .then(results => {
-                let splitUrl = e.split('//');
+                    let processObj = {
+                        "currentUrl": currentUrl,
+                        "results": results,
+                        "tempFilePath": tempFilePath,
+                        "opts": opts[0]
+                    };
+                    processResults(processObj);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    throw err;
+                });
+            await launchChromeAndRunLighthouseAsync(currentUrl, opts[1])
+                .then(results => {
+                    let processObj = {
+                        "e": currentUrl,
+                        "results": results,
+                        "tempFilePath": tempFilePath,
+                        "opts": opts[1]
+                    };
+                    processResults(processObj);
+                })
+                .catch(err => {
+                    console.error(err);
+                    throw err;
+                });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+
                 let replacedUrl = splitUrl[1].replace(/\//g, "_");
                 let report = generateReport.generateReportHtml(results);
                 let filePath;
