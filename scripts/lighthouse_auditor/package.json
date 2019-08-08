@@ -1,6 +1,6 @@
 {
   "name": "lighthouse-runner",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A utility package for automating lighthouse reports ",
   "main": "lighthouse_runner.js",
   "scripts": {
