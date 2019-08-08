@@ -1,10 +1,10 @@
 {
-  "name": "useful_scripts",
+  "name": "lighthouse-runner",
   "version": "0.0.1",
-  "description": "A collection of useful? scripts",
-  "main": "index.js",
+  "description": "A utility package for automating lighthouse reports ",
+  "main": "lighthouse_runner.js",
   "scripts": {
-    "test": "test"
+    "start": "node scripts/lighthouse_runner"
   },
   "repository": {
     "type": "git",
@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/TGiles/useful_scripts#readme",
   "dependencies": {
-    "chrome-launcher": "^0.10.5",
-    "lighthouse": "^3.2.1",
-    "simplecrawler": "^1.1.6"
+    "chrome-launcher": "^0.11.2",
+    "lighthouse": "^5.2.0",
+    "simplecrawler": "^1.1.8"
   }
 }

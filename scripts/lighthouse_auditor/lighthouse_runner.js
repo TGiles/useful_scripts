@@ -5,6 +5,7 @@ const chromeLauncher = require('chrome-launcher');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
+const simpleCrawlerConfig = require('./config/simpleCrawler');
 
 async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
     const chrome = await chromeLauncher.launch({
@@ -18,20 +19,29 @@ async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
 
 async function processReports(urlList, opts, fileTime, tempFilePath) {
     for (i = 0; i < urlList.length; i++) {
-        var e = urlList[i];
+        let e = urlList[i];
         await launchChromeAndRunLighthouseAsync(e, opts)
             .then(results => {
-                var splitUrl = e.split('//');
-                var replacedUrl = splitUrl[1].replace(/\//g, "_");
-                var report = generateReport.generateReportHtml(results);
-                // Default is to test against mobile form factor, therefore .mobile.report.html
-                const filePath = path.join(tempFilePath, replacedUrl + ".mobile.report.html");
+                let splitUrl = e.split('//');
+                let replacedUrl = splitUrl[1].replace(/\//g, "_");
+                let report = generateReport.generateReportHtml(results);
+                let filePath;
+                if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
+                    filePath = path.join(tempFilePath, replacedUrl + '.desktop.report.html');
+                } else {
+                    filePath = path.join(tempFilePath, replacedUrl + ".mobile.report.html");
+                }
                 // https://stackoverflow.com/questions/34811222/writefile-no-such-file-or-directory
                 fs.writeFile(filePath, report, {
                     encoding: 'utf-8'
                 }, (err) => {
                     if (err) throw err;
-                    console.log('Wrote mobile report: ' + e);
+                    if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
+                        console.log('Wrote desktop report: ', e)
+                    } else {
+                        console.log('Wrote mobile report: ', e);
+                    }
+
                 });
             })
             .catch((err) => {
@@ -56,14 +66,15 @@ const parallelLimit = async (funcList, limit = 4) => {
 };
 
 const main = () => {
-    var urlList = [];
-    const domainRoot = new URL("http://tgiles.github.io");
+    let urlList = [];
+    let domainRoot = new URL("https://tgiles.github.io");
+    domainRoot = new URL('https://www.dylansheffer.com');
     urlList.push(domainRoot.href);
-    var simpleCrawler = new Crawler(domainRoot.href)
+    let simpleCrawler = new Crawler(domainRoot.href)
         .on("queueadd", function (queueItem) {
             if (!queueItem.uriPath.match(
-                    /\.(css|jpg|pdf|docx|js|png|ico|gif|svg|psd|ai|zip|gz|zx|src|cassette|mini-profiler|axd|woff|woff2|)/i
-                )) {
+                /\.(css|jpg|pdf|docx|js|png|ico|gif|svg|psd|ai|zip|gz|zx|src|cassette|mini-profiler|axd|woff|woff2|)/i
+            )) {
                 urlList.push(queueItem.url);
                 console.log("Pushed: ", queueItem.url);
             }
@@ -71,24 +82,24 @@ const main = () => {
         .on("complete", function () {
             // https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
             // for more information on config options for lighthouse
-            var opts = {
+            let opts = {
                 extends: 'lighthouse:default',
                 chromeFlags: ['--headless'],
             };
-            var desktopOpts = {
+            let desktopOpts = {
                 extends: 'lighthouse:default',
                 chromeFlags: ['--headless'],
                 emulatedFormFactor: 'desktop'
             };
-            var fileTime = new Date().toISOString();
+            let fileTime = new Date().toISOString();
             // Replacing characters that make Windows filesystem sad
             fileTime = fileTime.replace(/:/g, "_");
             fileTime = fileTime.replace(/\./g, "_");
-            
+
             // tempFilePath is wherever we want to store the generated report
-            var tempFilePath = path.join(__dirname, "lighthouse", fileTime);
+            let tempFilePath = path.join(__dirname, "lighthouse", fileTime);
             if (!fs.existsSync(tempFilePath)) {
-                fs.mkdirSync(tempFilePath,  {recursive: true});
+                fs.mkdirSync(tempFilePath, { recursive: true });
             }
             // After crawling
             /* 
@@ -107,16 +118,10 @@ const main = () => {
                 console.log('done with all reports!');
             })();
         });
-    simpleCrawler.maxDepth = 0;
+    for (key in simpleCrawlerConfig) {
+        simpleCrawler[key] = simpleCrawlerConfig[key];
+    }
     simpleCrawler.host = domainRoot.hostname;
-    simpleCrawler.filterByDomain = true;
-    simpleCrawler.stripQuerystring = true;
-    simpleCrawler.downloadUnsupported = false;
-    simpleCrawler.maxConcurrency = 4;
-    simpleCrawler.allowInitalDomainChange = true;
-    simpleCrawler.respectRobotsTxt = true;
-    simpleCrawler.parseHTMLComments = false;
-    simpleCrawler.parseScriptTags = false;
     console.log('Starting simple crawler on', simpleCrawler.host, '!');
     simpleCrawler.start();
 }
