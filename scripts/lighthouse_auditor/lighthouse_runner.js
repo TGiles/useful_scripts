@@ -16,6 +16,7 @@ const simpleCrawlerConfig = require('./config/simpleCrawler');
  * @returns Lighthouse Result object (LHR)
  */
 async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
+    try {
     const chrome = await chromeLauncher.launch({
         chromeFlags: opts.chromeFlags
     });
@@ -23,6 +24,10 @@ async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
     const results = await lighthouse(url, opts, config);
     await chrome.kill();
     return results.lhr;
+
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 async function processReports(urlList, opts, fileTime, tempFilePath) {
