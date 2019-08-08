@@ -127,21 +127,18 @@ const parallelLimit = async (funcList, limit = 4) => {
     });
 };
 
-const main = () => {
-    let urlList = [];
-    let domainRoot = new URL("https://tgiles.github.io");
-    domainRoot = new URL('https://www.dylansheffer.com');
-    urlList.push(domainRoot.href);
-    let simpleCrawler = new Crawler(domainRoot.href)
-        .on("queueadd", function (queueItem) {
-            if (!queueItem.uriPath.match(
-                /\.(css|jpg|pdf|docx|js|png|ico|gif|svg|psd|ai|zip|gz|zx|src|cassette|mini-profiler|axd|woff|woff2|)/i
-            )) {
+/**
+ * Listener function for 'queueadd' event from simplecrawler.
+ *
+ * @param {*} queueItem a URL that has been picked up by the crawler
+ */
+const queueAdd = (queueItem) => {
+    const regex = /\.(css|jpg|pdf|docx|js|png|ico|gif|svg|psd|ai|zip|gz|zx|src|cassette|mini-profiler|axd|woff|woff2|)/i;
+    if (!queueItem.uriPath.match(regex)) {
                 urlList.push(queueItem.url);
                 console.log("Pushed: ", queueItem.url);
             }
-        })
-        .on("complete", function () {
+}
             // https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
             // for more information on config options for lighthouse
             let opts = {
