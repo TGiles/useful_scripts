@@ -17,13 +17,13 @@ const simpleCrawlerConfig = require('./config/simpleCrawler');
  */
 async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
     try {
-    const chrome = await chromeLauncher.launch({
-        chromeFlags: opts.chromeFlags
-    });
-    opts.port = chrome.port;
-    const results = await lighthouse(url, opts, config);
-    await chrome.kill();
-    return results.lhr;
+        const chrome = await chromeLauncher.launch({
+            chromeFlags: opts.chromeFlags
+        });
+        opts.port = chrome.port;
+        const results = await lighthouse(url, opts, config);
+        await chrome.kill();
+        return results.lhr;
 
     } catch (e) {
         console.error(e);
@@ -39,10 +39,10 @@ async function launchChromeAndRunLighthouseAsync(url, opts, config = null) {
  */
 async function processReports(urlList, opts, tempFilePath) {
     try {
-    for (i = 0; i < urlList.length; i++) {
+        for (i = 0; i < urlList.length; i++) {
             let currentUrl = urlList[i];
             await launchChromeAndRunLighthouseAsync(currentUrl, opts[0])
-            .then(results => {
+                .then(results => {
                     let processObj = {
                         "currentUrl": currentUrl,
                         "results": results,
@@ -81,31 +81,25 @@ const processResults = (processObj) => {
     let tempFilePath = processObj.tempFilePath;
     let results = processObj.results;
     let splitUrl = processObj.currentUrl.split('//');
-                let replacedUrl = splitUrl[1].replace(/\//g, "_");
-                let report = generateReport.generateReportHtml(results);
-                let filePath;
-                if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
-                    filePath = path.join(tempFilePath, replacedUrl + '.desktop.report.html');
-                } else {
+    let replacedUrl = splitUrl[1].replace(/\//g, "_");
+    let report = generateReport.generateReportHtml(results);
+    let filePath;
+    if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
+        filePath = path.join(tempFilePath, replacedUrl + '.desktop.report.html');
+    } else {
         filePath = path.join(tempFilePath, replacedUrl + '.mobile.report.html');
-                }
-                // https://stackoverflow.com/questions/34811222/writefile-no-such-file-or-directory
-                fs.writeFile(filePath, report, {
-                    encoding: 'utf-8'
-                }, (err) => {
-                    if (err) throw err;
-                    if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
-            console.log('Wrote desktop report: ', currentUrl)
-                    } else {
-            console.log('Wrote mobile report: ', currentUrl);
-                    }
-
-                });
-            })
-            .catch((err) => {
-                throw err
-            });
     }
+    // https://stackoverflow.com/questions/34811222/writefile-no-such-file-or-directory
+    fs.writeFile(filePath, report, {
+        encoding: 'utf-8'
+    }, (err) => {
+        if (err) throw err;
+        if (opts.emulatedFormFactor && opts.emulatedFormFactor === 'desktop') {
+            console.log('Wrote desktop report: ', currentUrl)
+        } else {
+            console.log('Wrote mobile report: ', currentUrl);
+        }
+    });
 };
 /**
  * Helper function to queue up async promises.
@@ -114,7 +108,7 @@ const processResults = (processObj) => {
  * @param {[function]} funcList A list of functions to be executed
  * @param {number} [limit=4] The number of parallel processes to execute the funcList
  * 
-*/
+ */
 const parallelLimit = async (funcList, limit = 4) => {
     let inFlight = new Set();
     return funcList.map(async (func, i) => {
@@ -135,47 +129,52 @@ const parallelLimit = async (funcList, limit = 4) => {
 const queueAdd = (queueItem) => {
     const regex = /\.(css|jpg|pdf|docx|js|png|ico|gif|svg|psd|ai|zip|gz|zx|src|cassette|mini-profiler|axd|woff|woff2|)/i;
     if (!queueItem.uriPath.match(regex)) {
-                urlList.push(queueItem.url);
-                console.log("Pushed: ", queueItem.url);
-            }
+        urlList.push(queueItem.url);
+        console.log("Pushed: ", queueItem.url);
+    }
 }
-            // https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
-            // for more information on config options for lighthouse
-            let opts = {
-                extends: 'lighthouse:default',
-                chromeFlags: ['--headless'],
-            };
-            let desktopOpts = {
-                extends: 'lighthouse:default',
-                chromeFlags: ['--headless'],
-                emulatedFormFactor: 'desktop'
-            };
-            let fileTime = new Date().toISOString();
-            // Replacing characters that make Windows filesystem sad
-            fileTime = fileTime.replace(/:/g, "_");
-            fileTime = fileTime.replace(/\./g, "_");
 
-            // tempFilePath is wherever we want to store the generated report
-            let tempFilePath = path.join(__dirname, "lighthouse", fileTime);
-            if (!fs.existsSync(tempFilePath)) {
-                fs.mkdirSync(tempFilePath, { recursive: true });
-            }
-            // After crawling
-            /* 
-            async start function
-            This prevents the CPU from getting bogged down when Lighthouse tries to run
-            a report on every URL in the URL list
-            */
-            (async () => {
-                const promises = await parallelLimit(
-                    [
-                        processReports(urlList, opts, fileTime, tempFilePath),
-                        processReports(urlList, desktopOpts, fileTime, tempFilePath)
-                    ],
-                    2);
-                await Promise.all(promises);
-                console.log('done with all reports!');
-            })();
+const complete = (urlList) => {
+    // https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
+    // for more information on config options for lighthouse
+    let opts = {
+        extends: 'lighthouse:default',
+        chromeFlags: ['--headless'],
+    };
+    let desktopOpts = {
+        extends: 'lighthouse:default',
+        chromeFlags: ['--headless'],
+        emulatedFormFactor: 'desktop'
+    };
+    let fileTime = new Date().toISOString();
+    // Replacing characters that make Windows filesystem sad
+    fileTime = fileTime.replace(/:/g, "_");
+    fileTime = fileTime.replace(/\./g, "_");
+
+    // tempFilePath is wherever we want to store the generated report
+    let tempFilePath = path.join(__dirname, "lighthouse", fileTime);
+    if (!fs.existsSync(tempFilePath)) {
+        fs.mkdirSync(tempFilePath, { recursive: true });
+    }
+    /* 
+    async start function
+    This prevents the CPU from getting bogged down when Lighthouse tries to run
+    a report on every URL in the URL list
+    */
+    (async () => {
+        try {
+            let combinedOpts = [desktopOpts, opts];
+            const desktopPromises = await parallelLimit(
+                [
+                    processReports(urlList, combinedOpts, tempFilePath)
+                ],
+                2);
+            await Promise.all(desktopPromises);
+            console.log('done with desktop reports!');
+        } catch (e) {
+            console.error(e);
+        }
+    })();
 
 }
 
