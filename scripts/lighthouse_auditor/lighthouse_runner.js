@@ -179,7 +179,25 @@ const main = () => {
                 await Promise.all(promises);
                 console.log('done with all reports!');
             })();
+
+}
+
+/**
+ * Main function.
+ * This kicks off the Lighthouse Runner process
+ */
+const main = () => {
+    let urlList = [];
+    let domainRoot = new URL(simpleCrawlerConfig.host);
+    urlList.push(domainRoot.href);
+    let simpleCrawler = new Crawler(domainRoot.href)
+        .on('queueadd', (queueItem) => {
+            queueAdd(queueItem)
+        })
+        .on('complete', () => {
+            complete(urlList);
         });
+
     for (key in simpleCrawlerConfig) {
         simpleCrawler[key] = simpleCrawlerConfig[key];
     }
