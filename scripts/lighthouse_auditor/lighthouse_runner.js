@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 const simpleCrawlerConfig = require('./config/simpleCrawler');
+const open = require('open');
 
 /**
  * Launches a headless instance of chrome and runs Lighthouse on that instance.
@@ -174,8 +175,24 @@ const complete = (urlList) => {
         } catch (e) {
             console.error(e);
         }
+        openReports(tempFilePath);
     })();
 
+};
+
+/**
+ *  Opens generated reports in your preferred browser
+ *
+ * @param {*} tempFilePath Path string where the generated reports live
+ */
+const openReports = (tempFilePath) => {
+    let filePath = tempFilePath;
+    if (fs.existsSync(filePath)) {
+        fs.readdirSync(filePath).forEach(file => {
+            console.log('opening: ', file);
+            let tempPath = path.join(tempFilePath, file);
+            open(tempPath);
+        });
 }
 
 /**

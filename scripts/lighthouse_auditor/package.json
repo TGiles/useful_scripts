@@ -19,6 +19,7 @@
   "dependencies": {
     "chrome-launcher": "^0.11.2",
     "lighthouse": "^5.2.0",
-    "simplecrawler": "^1.1.8"
+    "simplecrawler": "^1.1.8",
+    "open": "6.4.0"
   }
 }
