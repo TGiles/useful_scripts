@@ -58,7 +58,7 @@ async function processReports(urlList, opts, tempFilePath) {
             await launchChromeAndRunLighthouseAsync(currentUrl, opts[1])
                 .then(results => {
                     let processObj = {
-                        "e": currentUrl,
+                        "currentUrl": currentUrl,
                         "results": results,
                         "tempFilePath": tempFilePath,
                         "opts": opts[1]
