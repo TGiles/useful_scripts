@@ -5,8 +5,10 @@ const chromeLauncher = require('chrome-launcher');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
-const simpleCrawlerConfig = require('./config/simpleCrawler');
 const open = require('open');
+
+const simpleCrawlerConfig = require('./config/simpleCrawler');
+const runnerConfig = require('./config/runnerConfiguration');
 
 /**
  * Launches a headless instance of chrome and runs Lighthouse on that instance.
@@ -133,7 +135,7 @@ const queueAdd = (queueItem) => {
         urlList.push(queueItem.url);
         console.log("Pushed: ", queueItem.url);
     }
-}
+};
 
 const complete = (urlList) => {
     // https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
@@ -175,7 +177,9 @@ const complete = (urlList) => {
         } catch (e) {
             console.error(e);
         }
-        openReports(tempFilePath);
+        if (runnerConfig.autoOpenReports === true) {
+            openReports(tempFilePath);
+        }
     })();
 
 };
@@ -193,8 +197,8 @@ const openReports = (tempFilePath) => {
             let tempPath = path.join(tempFilePath, file);
             open(tempPath);
         });
-}
-
+    }
+};
 /**
  * Main function.
  * This kicks off the Lighthouse Runner process
