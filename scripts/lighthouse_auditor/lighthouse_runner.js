@@ -129,7 +129,7 @@ const parallelLimit = async (funcList, limit = 4) => {
  *
  * @param {*} queueItem a URL that has been picked up by the crawler
  */
-const queueAdd = (queueItem) => {
+const queueAdd = (queueItem, urlList) => {
     const regex = /\.(css|jpg|pdf|docx|js|png|ico|gif|svg|psd|ai|zip|gz|zx|src|cassette|mini-profiler|axd|woff|woff2|)/i;
     if (!queueItem.uriPath.match(regex)) {
         urlList.push(queueItem.url);
@@ -209,7 +209,7 @@ const main = () => {
     urlList.push(domainRoot.href);
     let simpleCrawler = new Crawler(domainRoot.href)
         .on('queueadd', (queueItem) => {
-            queueAdd(queueItem)
+            queueAdd(queueItem, urlList)
         })
         .on('complete', () => {
             complete(urlList);
