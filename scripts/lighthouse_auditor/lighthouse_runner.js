@@ -196,7 +196,7 @@ const openReports = () => {
     const port = 3000;
     app.use(express.static('lighthouse'), serveIndex('lighthouse', { 'icons': true }));
     app.listen(port);
-    open('http://localhost:3000');
+    open('http://localhost:' + port);
 };
 
 const openReportsWithoutServer = (tempFilePath) => {
