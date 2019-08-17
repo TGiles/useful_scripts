@@ -18,7 +18,10 @@
   "homepage": "https://github.com/TGiles/useful_scripts#readme",
   "dependencies": {
     "chrome-launcher": "^0.11.2",
+    "express": "^4.17.1",
     "lighthouse": "^5.2.0",
-    "simplecrawler": "^1.1.8"
+    "open": "6.4.0",
+    "simplecrawler": "^1.1.8",
+    "serve-index": "^1.9.1"
   }
 }

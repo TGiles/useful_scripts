@@ -5,7 +5,10 @@ const chromeLauncher = require('chrome-launcher');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
+const open = require('open');
+
 const simpleCrawlerConfig = require('./config/simpleCrawler');
+const runnerConfig = require('./config/runnerConfiguration');
 
 /**
  * Launches a headless instance of chrome and runs Lighthouse on that instance.
@@ -126,13 +129,13 @@ const parallelLimit = async (funcList, limit = 4) => {
  *
  * @param {*} queueItem a URL that has been picked up by the crawler
  */
-const queueAdd = (queueItem) => {
+const queueAdd = (queueItem, urlList) => {
     const regex = /\.(css|jpg|pdf|docx|js|png|ico|gif|svg|psd|ai|zip|gz|zx|src|cassette|mini-profiler|axd|woff|woff2|)/i;
     if (!queueItem.uriPath.match(regex)) {
         urlList.push(queueItem.url);
         console.log("Pushed: ", queueItem.url);
     }
-}
+};
 
 const complete = (urlList) => {
     // https://github.com/GoogleChrome/lighthouse/tree/master/lighthouse-core/config
@@ -174,10 +177,42 @@ const complete = (urlList) => {
         } catch (e) {
             console.error(e);
         }
+        if (runnerConfig.autoOpenReports === true) {
+            openReports(tempFilePath);
+        }
     })();
 
-}
+};
 
+/**
+ *  Opens generated reports in your preferred browser as an explorable list
+ *
+ */
+const openReports = () => {
+    const express = require('express');
+    const serveIndex = require('serve-index');
+    const app = express();
+    const port = 3000;
+    app.use(express.static('lighthouse'), serveIndex('lighthouse', { 'icons': true }));
+    app.listen(port);
+    open('http://localhost:' + port);
+};
+
+/**
+ * Opens **all** generated reports in your preferred browser without a local server
+ *
+ * @param {*} tempFilePath
+ */
+const openReportsWithoutServer = (tempFilePath) => {
+    let filePath = tempFilePath;
+    if (fs.existsSync(filePath)) {
+        fs.readdirSync(filePath).forEach(file => {
+            console.log('opening: ', file);
+            let tempPath = path.join(tempFilePath, file);
+            open(tempPath);
+        });
+    }
+};
 /**
  * Main function.
  * This kicks off the Lighthouse Runner process
@@ -188,7 +223,7 @@ const main = () => {
     urlList.push(domainRoot.href);
     let simpleCrawler = new Crawler(domainRoot.href)
         .on('queueadd', (queueItem) => {
-            queueAdd(queueItem)
+            queueAdd(queueItem, urlList)
         })
         .on('complete', () => {
             complete(urlList);
