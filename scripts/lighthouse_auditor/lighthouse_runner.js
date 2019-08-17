@@ -189,7 +189,17 @@ const complete = (urlList) => {
  *
  * @param {*} tempFilePath Path string where the generated reports live
  */
-const openReports = (tempFilePath) => {
+const openReports = () => {
+    const express = require('express');
+    const serveIndex = require('serve-index');
+    const app = express();
+    const port = 3000;
+    app.use(express.static('lighthouse'), serveIndex('lighthouse', { 'icons': true }));
+    app.listen(port);
+    open('http://localhost:3000');
+};
+
+const openReportsWithoutServer = (tempFilePath) => {
     let filePath = tempFilePath;
     if (fs.existsSync(filePath)) {
         fs.readdirSync(filePath).forEach(file => {
