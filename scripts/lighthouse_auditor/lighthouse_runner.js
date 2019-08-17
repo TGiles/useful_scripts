@@ -185,9 +185,8 @@ const complete = (urlList) => {
 };
 
 /**
- *  Opens generated reports in your preferred browser
+ *  Opens generated reports in your preferred browser as an explorable list
  *
- * @param {*} tempFilePath Path string where the generated reports live
  */
 const openReports = () => {
     const express = require('express');
@@ -199,6 +198,11 @@ const openReports = () => {
     open('http://localhost:' + port);
 };
 
+/**
+ * Opens **all** generated reports in your preferred browser without a local server
+ *
+ * @param {*} tempFilePath
+ */
 const openReportsWithoutServer = (tempFilePath) => {
     let filePath = tempFilePath;
     if (fs.existsSync(filePath)) {
