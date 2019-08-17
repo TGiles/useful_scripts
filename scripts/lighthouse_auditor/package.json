@@ -4,9 +4,7 @@
   "description": "A utility package for automating lighthouse reports ",
   "main": "lighthouse_runner.js",
   "scripts": {
-    "start": "node lighthouse_runner",
-    "build": "webpack --mode=development --config=./build/webpack/webpack.config.js",
-    "serve": "webpack-dev-server --mode=development --inline --debug --progress --display-error-details --config=./build/webpack/webpack.config.js"
+    "start": "node lighthouse_runner"
   },
   "repository": {
     "type": "git",
