@@ -19,7 +19,7 @@
   "dependencies": {
     "chrome-launcher": "^0.11.2",
     "express": "^4.17.1",
-    "lighthouse": "^5.2.0",
+    "lighthouse": "^9.6.7",
     "open": "6.4.0",
     "simplecrawler": "^1.1.8",
     "serve-index": "^1.9.1"
